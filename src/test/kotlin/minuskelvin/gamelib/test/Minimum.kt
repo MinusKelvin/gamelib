@@ -1,42 +1,23 @@
 package minuskelvin.gamelib.test
 
-import minuskelvin.gamelib.core.Game
-import minuskelvin.gamelib.core.Updateable
-import minuskelvin.gamelib.core.Windowed
-import minuskelvin.gamelib.core.launch
-import minuskelvin.gamelib.input.ButtonSource
-import minuskelvin.gamelib.input.EventInput
-import minuskelvin.gamelib.input.EventSource
+import minuskelvin.gamelib.Application
+import minuskelvin.gamelib.Screen
+import minuskelvin.gamelib.Windowed
+import minuskelvin.gamelib.math.Vector2i
 
-class Context internal constructor(
-        private val game: Game<Context>,
-        val close: EventInput
-) {
-    var state
-        get() = game.state
-        set(value) { game.state = value }
-}
-
-class GameState: Updateable<Context> {
-    override fun tick(context: Context) {
-        if (context.close.state)
-            context.state = null
+class State(val app: Application) : Screen {
+    override fun render(delta: Double) {
+        app.inputHandler.tick()
     }
 
-    override fun render(context: Context, alpha: Float) {
-        
+    override fun windowClose() {
+        app.state = null
     }
 }
 
 fun main(args: Array<String>) {
-    launch<Context>(args, Windowed("Minimal Test", 640, 480), 100.0) { game, input ->
-        val ctx = Context(
-                game = game,
-                close = input.createEventInput()
-        )
-        ctx.close.bind(ButtonSource.KEY_ESCAPE)
-        ctx.close.bind(EventSource.WINDOW_CLOSE)
-        ctx.state = GameState()
-        ctx
+    Application(Windowed(Vector2i(800, 600), "Minimum")).use { app ->
+        app.state = State(app)
+        app.run()
     }
 }
