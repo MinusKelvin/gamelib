@@ -3,6 +3,7 @@ package minuskelvin.gamelib.input
 import minuskelvin.gamelib.Application
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWGamepadState
+import org.lwjgl.opengl.GL11.glViewport
 import org.lwjgl.system.MemoryStack.stackPush
 import java.util.*
 import kotlin.math.max
@@ -141,6 +142,12 @@ class InputHandler internal constructor(private val app: Application, window: Lo
         app.state?.windowClose()
         Unit
     }
+    
+    private val fbosizeCB = { _: Long, w: Int, h: Int ->
+        glViewport(0, 0, w, h)
+        app.state?.windowResize(w, h)
+        Unit
+    }
 
     private val joystickCB = { id: Int, event: Int ->
         controllers[id] = when (event) {
@@ -157,6 +164,7 @@ class InputHandler internal constructor(private val app: Application, window: Lo
         glfwSetCursorPosCallback(window, mousePositionCB)
         glfwSetScrollCallback(window, scrollCB)
         glfwSetWindowCloseCallback(window, closeCB)
+        glfwSetFramebufferSizeCallback(window, fbosizeCB)
         glfwSetJoystickCallback(joystickCB)
 
         for (i in 0 until controllers.size) {

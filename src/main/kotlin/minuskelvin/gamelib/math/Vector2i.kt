@@ -1,5 +1,6 @@
 package minuskelvin.gamelib.math
 
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 data class Vector2i(val x: Int, val y: Int) {
@@ -36,6 +37,11 @@ data class Vector2i(val x: Int, val y: Int) {
     operator fun div(rhs: Int) = Vector2i(
             x = this.x / rhs,
             y = this.y / rhs
+    )
+
+    fun lerp(to: Vector2i, alpha: Double) = Vector2i(
+            x = ((1 - alpha) * x + alpha * to.x).roundToInt(),
+            y = ((1 - alpha) * y + alpha * to.y).roundToInt()
     )
     
     infix fun dot(rhs: Vector2i) = this.x * rhs.x + this.y * rhs.y

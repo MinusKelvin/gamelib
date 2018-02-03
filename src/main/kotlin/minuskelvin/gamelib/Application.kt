@@ -1,16 +1,21 @@
 package minuskelvin.gamelib
 
+import minuskelvin.gamelib.gl.RenderTarget
 import minuskelvin.gamelib.input.InputHandler
 import minuskelvin.gamelib.math.Vector2i
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
+import org.lwjgl.opengl.GL11.GL_COLOR
+import org.lwjgl.opengl.GL11.GL_DEPTH
+import org.lwjgl.opengl.GL30.*
+import org.lwjgl.system.MemoryStack.stackPush
 import org.lwjgl.system.MemoryUtil.NULL
 
 /**
  * Class for managing the basic functions of the game.
  * 
- * Provides the game window and a state machine.
+ * Provides the game glfwWindow and a state machine.
  * 
  * Typical usage:
  * 
@@ -26,10 +31,11 @@ import org.lwjgl.system.MemoryUtil.NULL
  * @see Screen
  */
 class Application(winconfig: WindowConfig) : AutoCloseable {
-    private val window: Long
+    private val glfwWindow: Long
     private val errorCB = GLFWErrorCallback.createThrow()
     
     val inputHandler: InputHandler
+    val screen: RenderTarget
 
     var state: Screen? = null
         set(value) {
@@ -49,7 +55,7 @@ class Application(winconfig: WindowConfig) : AutoCloseable {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3)
         
-        window = when (winconfig) {
+        glfwWindow = when (winconfig) {
             is Windowed -> {
                 if (winconfig.maximized && !winconfig.resizeable)
                     error("Can't make the window maximized and resizable")
@@ -75,10 +81,23 @@ class Application(winconfig: WindowConfig) : AutoCloseable {
             }
         }
         
-        glfwMakeContextCurrent(window)
+        glfwMakeContextCurrent(glfwWindow)
         GL.createCapabilities()
         
-        inputHandler = InputHandler(this, window)
+        glBindVertexArray(glGenVertexArrays())
+        
+        inputHandler = InputHandler(this, glfwWindow)
+        screen = object: RenderTarget {
+            override fun bind() = glBindFramebuffer(GL_FRAMEBUFFER, 0)
+            override fun clearColor(r: Float, g: Float, b: Float, a: Float) = stackPush().use {
+                bind()
+                glClearBufferfv(GL_COLOR, 0, it.floats(r, g, b, a))
+            }
+            override fun clearDepth(depth: Float) = stackPush().use {
+                bind()
+                glClearBufferfv(GL_DEPTH, 0, it.floats(1f))
+            }
+        }
     }
 
     /**
@@ -93,7 +112,7 @@ class Application(winconfig: WindowConfig) : AutoCloseable {
             
             state?.render(delta)
             
-            glfwSwapBuffers(window)
+            glfwSwapBuffers(glfwWindow)
             inputHandler.pollInput()
         }
     }
@@ -118,6 +137,7 @@ interface Screen {
     fun switchFrom(next: Screen?) {}
     
     fun windowClose() {}
+    fun windowResize(width: Int, height: Int) {}
 }
 
 sealed class WindowConfig

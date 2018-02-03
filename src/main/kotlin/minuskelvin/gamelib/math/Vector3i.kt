@@ -1,5 +1,6 @@
 package minuskelvin.gamelib.math
 
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 data class Vector3i(val x: Int, val y: Int, val z: Int) {
@@ -54,6 +55,12 @@ data class Vector3i(val x: Int, val y: Int, val z: Int) {
             x = this.y * rhs.z - this.z * rhs.y,
             y = this.z * rhs.x - this.x * rhs.z,
             z = this.x * rhs.y - this.y * rhs.x
+    )
+
+    fun lerp(to: Vector3i, alpha: Double) = Vector3i(
+            x = ((1 - alpha) * x + alpha * to.x).roundToInt(),
+            y = ((1 - alpha) * y + alpha * to.y).roundToInt(),
+            z = ((1 - alpha) * z + alpha * to.z).roundToInt()
     )
     
     fun toDouble() = Vector3d(

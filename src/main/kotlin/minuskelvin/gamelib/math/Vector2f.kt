@@ -40,6 +40,11 @@ data class Vector2f(val x: Float, val y: Float) {
     
     infix fun dot(rhs: Vector2f) = this.x * rhs.x + this.y * rhs.y
 
+    fun lerp(to: Vector2f, alpha: Float) = Vector2f(
+            x = (1 - alpha) * x + alpha * to.x,
+            y = (1 - alpha) * y + alpha * to.y
+    )
+
     fun toDouble() = Vector2d(
             x = x.toDouble(),
             y = y.toDouble()

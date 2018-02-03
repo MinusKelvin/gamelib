@@ -63,6 +63,13 @@ data class Vector4d(val x: Double, val y: Double, val z: Double, val w: Double) 
 
     infix fun dot(rhs: Vector4d) = this.x * rhs.x + this.y * rhs.y + this.z * rhs.z + this.w * rhs.w
 
+    fun lerp(to: Vector4d, alpha: Double) = Vector4d(
+            x = (1 - alpha) * x + alpha * to.x,
+            y = (1 - alpha) * y + alpha * to.y,
+            z = (1 - alpha) * z + alpha * to.z,
+            w = (1 - alpha) * w + alpha * to.w
+    )
+
     fun toFloat() = Vector4f(
             x = x.toFloat(),
             y = y.toFloat(),

@@ -56,6 +56,12 @@ data class Vector3f(val x: Float, val y: Float, val z: Float) {
             z = this.x * rhs.y - this.y * rhs.x
     )
 
+    fun lerp(to: Vector3f, alpha: Float) = Vector3f(
+            x = (1 - alpha) * x + alpha * to.x,
+            y = (1 - alpha) * y + alpha * to.y,
+            z = (1 - alpha) * z + alpha * to.z
+    )
+
     fun toDouble() = Vector3d(
             x = x.toDouble(),
             y = y.toDouble(),
