@@ -3,8 +3,12 @@ package minuskelvin.gamelib.gl
 import minuskelvin.gamelib.math.Vector2f
 import minuskelvin.gamelib.math.Vector3f
 import minuskelvin.gamelib.math.Vector4f
+import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL12.GL_UNSIGNED_INT_2_10_10_10_REV
 import org.lwjgl.opengl.GL15.*
+import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL30.glMapBufferRange
+import org.lwjgl.opengl.GL30.glVertexAttribIPointer
 import org.lwjgl.system.jemalloc.JEmalloc.je_free
 import org.lwjgl.system.jemalloc.JEmalloc.je_malloc
 import java.nio.ByteBuffer
@@ -21,7 +25,7 @@ class VertexBuffer<T : VertexStruct<T>>(private val struct: T) : AutoCloseable {
     fun allocate(count: Int, usage: Int) {
         bind()
         length = count
-        glBufferData(GL_ARRAY_BUFFER, count.toLong() * struct.size, usage)
+        glBufferData(GL_ARRAY_BUFFER, count.toLong() * struct.stride, usage)
     }
     
     fun allocate(data: VertexArray<T>, usage: Int) {
@@ -38,15 +42,21 @@ class VertexBuffer<T : VertexStruct<T>>(private val struct: T) : AutoCloseable {
             throw IllegalArgumentException("data overflows buffer")
         bind()
         data.buffer.position(0)
-        glBufferSubData(GL_ARRAY_BUFFER, start.toLong() * struct.size, data.buffer)
+        glBufferSubData(GL_ARRAY_BUFFER, start.toLong() * struct.stride, data.buffer)
     }
     
     fun map(invalidate: Boolean = false): Mapped {
         if (length == null)
             error("VertexBuffer has not been allocated")
         bind()
-        mapped = glMapBufferRange(GL_ARRAY_BUFFER, 0, length!!.toLong() * struct.size, GL_WRITE_ONLY, mapped)
+        mapped = glMapBufferRange(GL_ARRAY_BUFFER, 0, length!!.toLong() * struct.stride, GL_WRITE_ONLY, mapped)
         return Mapped(mapped!!)
+    }
+    
+    fun bindVertexLayout(): AutoCloseable {
+        bind()
+        struct.attributes.forEach { it.enableAndBind() }
+        return AutoCloseable { struct.attributes.forEach { it.disable() } }
     }
 
     override fun close() {
@@ -55,7 +65,7 @@ class VertexBuffer<T : VertexStruct<T>>(private val struct: T) : AutoCloseable {
     
     inner class Mapped internal constructor(private val buffer: ByteBuffer) : AutoCloseable {
         operator fun get(index: Int): T {
-            buffer.position(index * struct.size)
+            buffer.position(index * struct.stride)
             struct.ptr = buffer
             return struct
         }
@@ -68,10 +78,10 @@ class VertexBuffer<T : VertexStruct<T>>(private val struct: T) : AutoCloseable {
 }
 
 class VertexArray<T: VertexStruct<T>>(private val struct: T, val length: Int) : AutoCloseable {
-    internal var buffer = je_malloc(length.toLong() * struct.size)
+    internal var buffer = je_malloc(length.toLong() * struct.stride)
 
     operator fun get(index: Int): T {
-        buffer.position(index * struct.size)
+        buffer.position(index * struct.stride)
         struct.ptr = buffer
         return struct
     }
@@ -83,21 +93,44 @@ class VertexArray<T: VertexStruct<T>>(private val struct: T, val length: Int) : 
 }
 
 open class VertexStruct<T: VertexStruct<T>> {
+    internal val attributes = ArrayList<Attribute>()
     internal var ptr: ByteBuffer? = null
-    var size = 0
+    var stride = 0
         private set
     
     private fun fieldOffset(fieldSize: Int): Int {
-        val tmp = size
-        size += fieldSize
-        size += (4 - size % 4) % 4
-        return size - fieldSize
+        val tmp = stride
+        stride += fieldSize
+        stride += (4 - stride % 4) % 4
+        return stride - fieldSize
+    }
+
+    abstract inner class Attribute(
+            private val index: Int,
+            private val glType: Int,
+            private val size: Int,
+            private val normalized: Boolean,
+            protected val offset: Int,
+            private val intvariant: Boolean = false
+    ) {
+        init {
+            attributes += this
+        }
+        
+        fun enableAndBind() {
+            if (intvariant)
+                glVertexAttribIPointer(index, size, glType, stride, offset.toLong())
+            else
+                glVertexAttribPointer(index, size, glType, normalized, stride, offset.toLong())
+            glEnableVertexAttribArray(index)
+        }
+        
+        fun disable() {
+            glDisableVertexAttribArray(index)
+        }
     }
     
-    /** `size = 1, type = GL_FLOAT` */
-    protected inner class FloatAttribute {
-        private val offset = fieldOffset(4)
-        
+    protected inner class FloatAttribute(index: Int) : Attribute(index, GL_FLOAT, 1, false, fieldOffset(4)) {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Float) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
@@ -111,10 +144,7 @@ open class VertexStruct<T: VertexStruct<T>> {
         }
     }
 
-    /** `size = 2, type = GL_FLOAT` */
-    protected inner class Vector2fAttribute {
-        private val offset = fieldOffset(8)
-
+    protected inner class Vector2fAttribute(index: Int) : Attribute(index, GL_FLOAT, 2, false, fieldOffset(8)) {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector2f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
@@ -132,10 +162,7 @@ open class VertexStruct<T: VertexStruct<T>> {
         }
     }
 
-    /** `size = 3, type = GL_FLOAT` */
-    protected inner class Vector3fAttribute {
-        private val offset = fieldOffset(12)
-
+    protected inner class Vector3fAttribute(index: Int) : Attribute(index, GL_FLOAT, 3, false, fieldOffset(12)) {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector3f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
@@ -155,10 +182,7 @@ open class VertexStruct<T: VertexStruct<T>> {
         }
     }
 
-    /** `size = 4, type = GL_FLOAT` */
-    protected inner class Vector4fAttribute {
-        private val offset = fieldOffset(16)
-
+    protected inner class Vector4fAttribute(index: Int) : Attribute(index, GL_FLOAT, 4, false, fieldOffset(16)) {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector4f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
@@ -180,10 +204,7 @@ open class VertexStruct<T: VertexStruct<T>> {
         }
     }
 
-    /** `size = 2, type = GL_UNSIGNED_SHORT, normalized` */
-    protected inner class ShortVector2fAttribute {
-        private val offset = fieldOffset(4)
-
+    protected inner class ShortVector2fAttribute(index: Int) : Attribute(index, GL_UNSIGNED_SHORT, 2, true, fieldOffset(4)) {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector2f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
@@ -201,10 +222,7 @@ open class VertexStruct<T: VertexStruct<T>> {
         }
     }
 
-    /** `size = 3, type = GL_UNSIGNED_SHORT, normalized` */
-    protected inner class ShortVector3fAttribute {
-        private val offset = fieldOffset(6)
-
+    protected inner class ShortVector3fAttribute(index: Int) : Attribute(index, GL_UNSIGNED_SHORT, 3, true, fieldOffset(6)) {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector3f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
@@ -224,10 +242,7 @@ open class VertexStruct<T: VertexStruct<T>> {
         }
     }
 
-    /** `size = 4, type = GL_UNSIGNED_SHORT, normalized` */
-    protected inner class ShortVector4fAttribute {
-        private val offset = fieldOffset(8)
-
+    protected inner class ShortVector4fAttribute(index: Int) : Attribute(index, GL_UNSIGNED_SHORT, 4, true, fieldOffset(8)) {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector4f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
@@ -249,10 +264,7 @@ open class VertexStruct<T: VertexStruct<T>> {
         }
     }
 
-    /** `size = 3, type = GL_UNSIGNED_BYTE, normalized` */
-    protected inner class ByteVector3fAttribute {
-        private val offset = fieldOffset(3)
-
+    protected inner class ByteVector3fAttribute(index: Int) : Attribute(index, GL_UNSIGNED_BYTE, 3, true, fieldOffset(3)) {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector3f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
@@ -272,10 +284,7 @@ open class VertexStruct<T: VertexStruct<T>> {
         }
     }
 
-    /** `size = 4, type = GL_UNSIGNED_BYTE, normalized` */
-    protected inner class ByteVector4fAttribute {
-        private val offset = fieldOffset(4)
-
+    protected inner class ByteVector4fAttribute(index: Int) : Attribute(index, GL_UNSIGNED_BYTE, 4, true, fieldOffset(4)) {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector4f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
@@ -297,10 +306,7 @@ open class VertexStruct<T: VertexStruct<T>> {
         }
     }
 
-    /** `size = 4, type = GL_UNSIGNED_INT_2_10_10_10_REV, normalized` */
-    protected inner class Int10Vector4fAttribute {
-        private val offset = fieldOffset(4)
-
+    protected inner class Int10Vector4fAttribute(index: Int) : Attribute(index, GL_UNSIGNED_INT_2_10_10_10_REV, 4, true, fieldOffset(4)) {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector4f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
