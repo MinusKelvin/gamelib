@@ -1,8 +1,8 @@
 package minuskelvin.gamelib.gl
 
-import minuskelvin.gamelib.math.Vector2f
-import minuskelvin.gamelib.math.Vector3f
-import minuskelvin.gamelib.math.Vector4f
+import minuskelvin.gamelib.math.vector.Vector2f
+import minuskelvin.gamelib.math.vector.Vector3f
+import minuskelvin.gamelib.math.vector.Vector4f
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL12.GL_UNSIGNED_INT_2_10_10_10_REV
 import org.lwjgl.opengl.GL15.*
@@ -196,9 +196,9 @@ open class VertexStruct<T: VertexStruct<T>> {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
             return Vector4f(
-                    ptr.getFloat(ptr.position() + offset +  0),
-                    ptr.getFloat(ptr.position() + offset +  4),
-                    ptr.getFloat(ptr.position() + offset +  8),
+                    ptr.getFloat(ptr.position() + offset + 0),
+                    ptr.getFloat(ptr.position() + offset + 4),
+                    ptr.getFloat(ptr.position() + offset + 8),
                     ptr.getFloat(ptr.position() + offset + 12)
             )
         }
@@ -322,10 +322,10 @@ open class VertexStruct<T: VertexStruct<T>> {
             val ptr = ptr!!
             val v = ptr.getInt(ptr.position() + offset)
             return Vector4f(
-                    ((v shr  0) and INT_10_MAX).toFloat() / INT_10_MAX,
+                    ((v shr 0) and INT_10_MAX).toFloat() / INT_10_MAX,
                     ((v shr 10) and INT_10_MAX).toFloat() / INT_10_MAX,
                     ((v shr 20) and INT_10_MAX).toFloat() / INT_10_MAX,
-                    ((v shr 30) and INT_2_MAX) .toFloat() / INT_2_MAX
+                    ((v shr 30) and INT_2_MAX).toFloat() / INT_2_MAX
             )
         }
     }

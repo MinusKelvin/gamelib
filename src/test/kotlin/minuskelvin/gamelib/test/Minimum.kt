@@ -7,9 +7,9 @@ import minuskelvin.gamelib.gl.ShaderProgram
 import minuskelvin.gamelib.gl.VertexArray
 import minuskelvin.gamelib.gl.VertexBuffer
 import minuskelvin.gamelib.gl.VertexStruct
-import minuskelvin.gamelib.math.Vector2i
-import minuskelvin.gamelib.math.Vector3f
-import minuskelvin.gamelib.math.Vector4f
+import minuskelvin.gamelib.math.vector.Vector2i
+import minuskelvin.gamelib.math.vector.Vector3f
+import minuskelvin.gamelib.math.vector.Vector4f
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
 import org.lwjgl.opengl.GL11.glDrawArrays
 import org.lwjgl.opengl.GL15.GL_STATIC_DRAW

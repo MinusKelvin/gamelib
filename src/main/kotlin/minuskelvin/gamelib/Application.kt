@@ -2,7 +2,7 @@ package minuskelvin.gamelib
 
 import minuskelvin.gamelib.gl.RenderTarget
 import minuskelvin.gamelib.input.InputHandler
-import minuskelvin.gamelib.math.Vector2i
+import minuskelvin.gamelib.math.vector.Vector2i
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
