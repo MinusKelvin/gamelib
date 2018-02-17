@@ -87,12 +87,12 @@ data class Matrix4i(
             m03 = this.m03 / rhs.m03, m13 = this.m13 / rhs.m13, m23 = this.m23 / rhs.m23, m33 = this.m33 / rhs.m33
     )
     
-    fun inverse() = Matrix4i( // Matrix of cofactors, transposed
-            m00 =   minorDet00,  m01 = -(minorDet10), m02 =   minorDet20,  m03 = -(minorDet30),
-            m10 = -(minorDet01), m11 =   minorDet11,  m12 = -(minorDet21), m13 =   minorDet31,
-            m20 =   minorDet02,  m21 = -(minorDet12), m22 =   minorDet22,  m23 = -(minorDet32),
-            m30 = -(minorDet03), m31 =   minorDet13,  m32 = -(minorDet23), m33 =   minorDet33
-    ) / determinant
+    fun inverse() = Matrix4d( // Matrix of cofactors, transposed
+            m00 =  minorDet00.toDouble(), m01 = -minorDet10.toDouble(), m02 =  minorDet20.toDouble(), m03 = -minorDet30.toDouble(),
+            m10 = -minorDet01.toDouble(), m11 =  minorDet11.toDouble(), m12 = -minorDet21.toDouble(), m13 =  minorDet31.toDouble(),
+            m20 =  minorDet02.toDouble(), m21 = -minorDet12.toDouble(), m22 =  minorDet22.toDouble(), m23 = -minorDet32.toDouble(),
+            m30 = -minorDet03.toDouble(), m31 =  minorDet13.toDouble(), m32 = -minorDet23.toDouble(), m33 =  minorDet33.toDouble()
+    ) / determinant.toDouble()
     
     fun transpose() = Matrix4i(
             m00 = m00, m10 = m01, m20 = m02, m30 = m03,
@@ -135,22 +135,25 @@ data class Matrix4i(
     val column3 get() = Vector4i(m30, m31, m32, m33)
 }
 
-private val Matrix4i.minorDet30 get() = m01 * (m12 * m23 - m13 * m22) - m11 * (m02 * m23 - m03 * m22) + m21 * (m02 * m13 - m03 * m12)
-private val Matrix4i.minorDet31 get() = m00 * (m12 * m23 - m13 * m22) - m10 * (m02 * m23 - m03 * m22) + m20 * (m02 * m13 - m03 * m12)
-private val Matrix4i.minorDet32 get() = m00 * (m11 * m23 - m13 * m21) - m10 * (m01 * m23 - m03 * m21) + m20 * (m01 * m13 - m03 * m11)
-private val Matrix4i.minorDet33 get() = m00 * (m11 * m22 - m12 * m21) - m10 * (m01 * m22 - m02 * m21) + m20 * (m01 * m12 - m02 * m11)
+// These would be inlined in-code if it weren't for their sheer size.
+// So, we tell the compiler to do that for us.
 
-private val Matrix4i.minorDet20 get() = m01 * (m12 * m33 - m13 * m32) - m11 * (m02 * m33 - m03 * m32) + m31 * (m02 * m13 - m03 * m12)
-private val Matrix4i.minorDet21 get() = m00 * (m12 * m33 - m13 * m32) - m10 * (m02 * m33 - m03 * m32) + m30 * (m02 * m13 - m03 * m12)
-private val Matrix4i.minorDet22 get() = m00 * (m11 * m33 - m13 * m31) - m10 * (m01 * m33 - m03 * m31) + m30 * (m01 * m13 - m03 * m11)
-private val Matrix4i.minorDet23 get() = m00 * (m11 * m32 - m12 * m31) - m10 * (m01 * m32 - m02 * m31) + m30 * (m01 * m12 - m02 * m11)
+private inline val Matrix4i.minorDet30 get() = m01 * (m12 * m23 - m13 * m22) - m11 * (m02 * m23 - m03 * m22) + m21 * (m02 * m13 - m03 * m12)
+private inline val Matrix4i.minorDet31 get() = m00 * (m12 * m23 - m13 * m22) - m10 * (m02 * m23 - m03 * m22) + m20 * (m02 * m13 - m03 * m12)
+private inline val Matrix4i.minorDet32 get() = m00 * (m11 * m23 - m13 * m21) - m10 * (m01 * m23 - m03 * m21) + m20 * (m01 * m13 - m03 * m11)
+private inline val Matrix4i.minorDet33 get() = m00 * (m11 * m22 - m12 * m21) - m10 * (m01 * m22 - m02 * m21) + m20 * (m01 * m12 - m02 * m11)
 
-private val Matrix4i.minorDet10 get() = m01 * (m22 * m33 - m23 * m32) - m21 * (m02 * m33 - m03 * m32) + m21 * (m02 * m23 - m03 * m22)
-private val Matrix4i.minorDet11 get() = m00 * (m22 * m33 - m23 * m32) - m20 * (m02 * m33 - m03 * m32) + m20 * (m02 * m23 - m03 * m22)
-private val Matrix4i.minorDet12 get() = m00 * (m21 * m33 - m23 * m31) - m20 * (m01 * m33 - m03 * m31) + m20 * (m01 * m23 - m03 * m21)
-private val Matrix4i.minorDet13 get() = m00 * (m21 * m32 - m22 * m31) - m20 * (m01 * m32 - m02 * m31) + m20 * (m01 * m22 - m02 * m21)
+private inline val Matrix4i.minorDet20 get() = m01 * (m12 * m33 - m13 * m32) - m11 * (m02 * m33 - m03 * m32) + m31 * (m02 * m13 - m03 * m12)
+private inline val Matrix4i.minorDet21 get() = m00 * (m12 * m33 - m13 * m32) - m10 * (m02 * m33 - m03 * m32) + m30 * (m02 * m13 - m03 * m12)
+private inline val Matrix4i.minorDet22 get() = m00 * (m11 * m33 - m13 * m31) - m10 * (m01 * m33 - m03 * m31) + m30 * (m01 * m13 - m03 * m11)
+private inline val Matrix4i.minorDet23 get() = m00 * (m11 * m32 - m12 * m31) - m10 * (m01 * m32 - m02 * m31) + m30 * (m01 * m12 - m02 * m11)
 
-private val Matrix4i.minorDet00 get() = m11 * (m22 * m33 - m23 * m32) - m21 * (m12 * m33 - m13 * m32) + m21 * (m12 * m23 - m13 * m22)
-private val Matrix4i.minorDet01 get() = m10 * (m22 * m33 - m23 * m32) - m20 * (m12 * m33 - m13 * m32) + m20 * (m12 * m23 - m13 * m22)
-private val Matrix4i.minorDet02 get() = m10 * (m21 * m33 - m23 * m31) - m20 * (m11 * m33 - m13 * m31) + m20 * (m11 * m23 - m13 * m21)
-private val Matrix4i.minorDet03 get() = m10 * (m21 * m32 - m22 * m31) - m20 * (m11 * m32 - m12 * m31) + m20 * (m11 * m22 - m12 * m21)
+private inline val Matrix4i.minorDet10 get() = m01 * (m22 * m33 - m23 * m32) - m21 * (m02 * m33 - m03 * m32) + m21 * (m02 * m23 - m03 * m22)
+private inline val Matrix4i.minorDet11 get() = m00 * (m22 * m33 - m23 * m32) - m20 * (m02 * m33 - m03 * m32) + m20 * (m02 * m23 - m03 * m22)
+private inline val Matrix4i.minorDet12 get() = m00 * (m21 * m33 - m23 * m31) - m20 * (m01 * m33 - m03 * m31) + m20 * (m01 * m23 - m03 * m21)
+private inline val Matrix4i.minorDet13 get() = m00 * (m21 * m32 - m22 * m31) - m20 * (m01 * m32 - m02 * m31) + m20 * (m01 * m22 - m02 * m21)
+
+private inline val Matrix4i.minorDet00 get() = m11 * (m22 * m33 - m23 * m32) - m21 * (m12 * m33 - m13 * m32) + m21 * (m12 * m23 - m13 * m22)
+private inline val Matrix4i.minorDet01 get() = m10 * (m22 * m33 - m23 * m32) - m20 * (m12 * m33 - m13 * m32) + m20 * (m12 * m23 - m13 * m22)
+private inline val Matrix4i.minorDet02 get() = m10 * (m21 * m33 - m23 * m31) - m20 * (m11 * m33 - m13 * m31) + m20 * (m11 * m23 - m13 * m21)
+private inline val Matrix4i.minorDet03 get() = m10 * (m21 * m32 - m22 * m31) - m20 * (m11 * m32 - m12 * m31) + m20 * (m11 * m22 - m12 * m21)

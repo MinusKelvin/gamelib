@@ -81,6 +81,11 @@ data class Matrix2f(
             m00 = m00.toDouble(), m10 = m10.toDouble(),
             m01 = m01.toDouble(), m11 = m11.toDouble()
     )
+
+    fun toInt() = Matrix2i(
+            m00 = m00.toInt(), m10 = m10.toInt(),
+            m01 = m01.toInt(), m11 = m11.toInt()
+    )
     
     val row0 get() = Vector2f(m00, m10)
     val row1 get() = Vector2f(m01, m11)

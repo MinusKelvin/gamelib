@@ -73,6 +73,13 @@ data class Vector4f(val x: Float, val y: Float, val z: Float, val w: Float) {
             w = w.toDouble()
     )
 
+    fun toInt() = Vector4i(
+            x = x.toInt(),
+            y = y.toInt(),
+            z = z.toInt(),
+            w = w.toInt()
+    )
+
     val lengthSq get() = this dot this
     val length get() = sqrt(lengthSq)
 

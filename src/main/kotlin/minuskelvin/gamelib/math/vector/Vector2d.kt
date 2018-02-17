@@ -47,6 +47,11 @@ data class Vector2d(val x: Double, val y: Double) {
             x = x.toFloat(),
             y = y.toFloat()
     )
+
+    fun toInt() = Vector2i(
+            x = x.toInt(),
+            y = y.toInt()
+    )
     
     val lengthSq get() = this dot this
     val length get() = sqrt(lengthSq)

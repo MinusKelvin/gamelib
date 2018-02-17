@@ -65,6 +65,12 @@ data class Vector3f(val x: Float, val y: Float, val z: Float) {
             z = z.toDouble()
     )
 
+    fun toInt() = Vector3i(
+            x = x.toInt(),
+            y = y.toInt(),
+            z = z.toInt()
+    )
+
     val lengthSq get() = this dot this
     val length get() = sqrt(lengthSq)
 

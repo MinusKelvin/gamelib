@@ -100,6 +100,12 @@ data class Matrix3f(
             m02 = m02.toDouble(), m12 = m12.toDouble(), m22 = m22.toDouble()
     )
 
+    fun toInt() = Matrix3i(
+            m00 = m00.toInt(), m10 = m10.toInt(), m20 = m20.toInt(),
+            m01 = m01.toInt(), m11 = m11.toInt(), m21 = m21.toInt(),
+            m02 = m02.toInt(), m12 = m12.toInt(), m22 = m22.toInt()
+    )
+
     val row0 get() = Vector3f(m00, m10, m20)
     val row1 get() = Vector3f(m01, m11, m21)
     val row2 get() = Vector3f(m02, m12, m22)

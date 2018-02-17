@@ -1,8 +1,6 @@
 package minuskelvin.gamelib.gl
 
-import minuskelvin.gamelib.math.vector.Vector2f
-import minuskelvin.gamelib.math.vector.Vector3f
-import minuskelvin.gamelib.math.vector.Vector4f
+import minuskelvin.gamelib.math.vector.*
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL12.GL_UNSIGNED_INT_2_10_10_10_REV
 import org.lwjgl.opengl.GL15.*
@@ -148,17 +146,13 @@ open class VertexStruct<T: VertexStruct<T>> {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector2f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            ptr.putFloat(ptr.position() + offset + 0, value.x)
-            ptr.putFloat(ptr.position() + offset + 4, value.y)
+            ptr.putVector(ptr.position() + offset, value)
         }
 
         operator fun getValue(thisRef: VertexStruct<T>, property: KProperty<*>): Vector2f {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            return Vector2f(
-                    ptr.getFloat(ptr.position() + offset + 0),
-                    ptr.getFloat(ptr.position() + offset + 4)
-            )
+            return ptr.getVector2f(ptr.position() + offset)
         }
     }
 
@@ -166,19 +160,13 @@ open class VertexStruct<T: VertexStruct<T>> {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector3f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            ptr.putFloat(ptr.position() + offset + 0, value.x)
-            ptr.putFloat(ptr.position() + offset + 4, value.y)
-            ptr.putFloat(ptr.position() + offset + 8, value.z)
+            ptr.putVector(ptr.position() + offset, value)
         }
 
         operator fun getValue(thisRef: VertexStruct<T>, property: KProperty<*>): Vector3f {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            return Vector3f(
-                    ptr.getFloat(ptr.position() + offset + 0),
-                    ptr.getFloat(ptr.position() + offset + 4),
-                    ptr.getFloat(ptr.position() + offset + 8)
-            )
+            return ptr.getVector3f(ptr.position() + offset)
         }
     }
 
@@ -186,21 +174,13 @@ open class VertexStruct<T: VertexStruct<T>> {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector4f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            ptr.putFloat(ptr.position() + offset +  0, value.x)
-            ptr.putFloat(ptr.position() + offset +  4, value.y)
-            ptr.putFloat(ptr.position() + offset +  8, value.z)
-            ptr.putFloat(ptr.position() + offset + 12, value.w)
+            ptr.putVector(ptr.position() + offset, value)
         }
 
         operator fun getValue(thisRef: VertexStruct<T>, property: KProperty<*>): Vector4f {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            return Vector4f(
-                    ptr.getFloat(ptr.position() + offset + 0),
-                    ptr.getFloat(ptr.position() + offset + 4),
-                    ptr.getFloat(ptr.position() + offset + 8),
-                    ptr.getFloat(ptr.position() + offset + 12)
-            )
+            return ptr.getVector4f(ptr.position() + offset + 0)
         }
     }
 
@@ -208,17 +188,13 @@ open class VertexStruct<T: VertexStruct<T>> {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector2f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            ptr.putShort(ptr.position() + offset + 0, (value.x * INT_16_MAX).toShort())
-            ptr.putShort(ptr.position() + offset + 2, (value.y * INT_16_MAX).toShort())
+            ptr.putVectorAsShort(ptr.position() + offset, (value * INT_16_MAX).toInt())
         }
 
         operator fun getValue(thisRef: VertexStruct<T>, property: KProperty<*>): Vector2f {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            return Vector2f(
-                    ptr.getShort(ptr.position() + offset + 0).toInt().and(INT_16_MAX).toFloat() / INT_16_MAX,
-                    ptr.getShort(ptr.position() + offset + 2).toInt().and(INT_16_MAX).toFloat() / INT_16_MAX
-            )
+            return ptr.getVector2iAsUnsignedShort(ptr.position() + offset).toFloat() / INT_16_MAX
         }
     }
 
@@ -226,19 +202,13 @@ open class VertexStruct<T: VertexStruct<T>> {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector3f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            ptr.putShort(ptr.position() + offset + 0, (value.x * INT_16_MAX).toShort())
-            ptr.putShort(ptr.position() + offset + 2, (value.y * INT_16_MAX).toShort())
-            ptr.putShort(ptr.position() + offset + 4, (value.z * INT_16_MAX).toShort())
+            ptr.putVectorAsShort(ptr.position() + offset, (value * INT_16_MAX).toInt())
         }
 
         operator fun getValue(thisRef: VertexStruct<T>, property: KProperty<*>): Vector3f {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            return Vector3f(
-                    ptr.getShort(ptr.position() + offset + 0).toInt().and(INT_16_MAX).toFloat() / INT_16_MAX,
-                    ptr.getShort(ptr.position() + offset + 2).toInt().and(INT_16_MAX).toFloat() / INT_16_MAX,
-                    ptr.getShort(ptr.position() + offset + 4).toInt().and(INT_16_MAX).toFloat() / INT_16_MAX
-            )
+            return ptr.getVector3iAsUnsignedShort(ptr.position() + offset).toFloat() / INT_16_MAX
         }
     }
 
@@ -246,21 +216,13 @@ open class VertexStruct<T: VertexStruct<T>> {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector4f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            ptr.putShort(ptr.position() + offset + 0, (value.x * INT_16_MAX).toShort())
-            ptr.putShort(ptr.position() + offset + 2, (value.y * INT_16_MAX).toShort())
-            ptr.putShort(ptr.position() + offset + 4, (value.z * INT_16_MAX).toShort())
-            ptr.putShort(ptr.position() + offset + 6, (value.w * INT_16_MAX).toShort())
+            ptr.putVectorAsShort(ptr.position() + offset, (value * INT_16_MAX).toInt())
         }
 
         operator fun getValue(thisRef: VertexStruct<T>, property: KProperty<*>): Vector4f {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            return Vector4f(
-                    ptr.getShort(ptr.position() + offset + 0).toInt().and(INT_16_MAX).toFloat() / INT_16_MAX,
-                    ptr.getShort(ptr.position() + offset + 2).toInt().and(INT_16_MAX).toFloat() / INT_16_MAX,
-                    ptr.getShort(ptr.position() + offset + 4).toInt().and(INT_16_MAX).toFloat() / INT_16_MAX,
-                    ptr.getShort(ptr.position() + offset + 6).toInt().and(INT_16_MAX).toFloat() / INT_16_MAX
-            )
+            return ptr.getVector4iAsUnsignedShort(ptr.position() + offset).toFloat() / INT_16_MAX
         }
     }
 
@@ -268,19 +230,13 @@ open class VertexStruct<T: VertexStruct<T>> {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector3f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            ptr.put(ptr.position() + offset + 0, (value.x * INT_8_MAX).toByte())
-            ptr.put(ptr.position() + offset + 1, (value.y * INT_8_MAX).toByte())
-            ptr.put(ptr.position() + offset + 2, (value.z * INT_8_MAX).toByte())
+            ptr.putVectorAsByte(ptr.position() + offset, (value * INT_8_MAX).toInt())
         }
 
         operator fun getValue(thisRef: VertexStruct<T>, property: KProperty<*>): Vector3f {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            return Vector3f(
-                    ptr.get(ptr.position() + offset + 0).toInt().and(INT_8_MAX).toFloat() / INT_8_MAX,
-                    ptr.get(ptr.position() + offset + 1).toInt().and(INT_8_MAX).toFloat() / INT_8_MAX,
-                    ptr.get(ptr.position() + offset + 2).toInt().and(INT_8_MAX).toFloat() / INT_8_MAX
-            )
+            return ptr.getVector3iAsUnsignedByte(ptr.position() + offset).toFloat() / INT_8_MAX
         }
     }
 
@@ -288,21 +244,13 @@ open class VertexStruct<T: VertexStruct<T>> {
         operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Vector4f) {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            ptr.put(ptr.position() + offset + 0, (value.x * INT_8_MAX).toByte())
-            ptr.put(ptr.position() + offset + 1, (value.y * INT_8_MAX).toByte())
-            ptr.put(ptr.position() + offset + 2, (value.z * INT_8_MAX).toByte())
-            ptr.put(ptr.position() + offset + 3, (value.w * INT_8_MAX).toByte())
+            ptr.putVectorAsByte(ptr.position() + offset, (value * INT_8_MAX).toInt())
         }
 
         operator fun getValue(thisRef: VertexStruct<T>, property: KProperty<*>): Vector4f {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
-            return Vector4f(
-                    ptr.get(ptr.position() + offset + 0).toInt().and(INT_8_MAX).toFloat() / INT_8_MAX,
-                    ptr.get(ptr.position() + offset + 1).toInt().and(INT_8_MAX).toFloat() / INT_8_MAX,
-                    ptr.get(ptr.position() + offset + 2).toInt().and(INT_8_MAX).toFloat() / INT_8_MAX,
-                    ptr.get(ptr.position() + offset + 3).toInt().and(INT_8_MAX).toFloat() / INT_8_MAX
-            )
+            return ptr.getVector4iAsUnsignedByte(ptr.position() + offset).toFloat() / INT_8_MAX
         }
     }
 
@@ -332,6 +280,7 @@ open class VertexStruct<T: VertexStruct<T>> {
 }
 
 const val INT_2_MAX  = 0b11
-const val INT_8_MAX  = 0b1111_1111
 const val INT_10_MAX = 0b1111_1111_11
-const val INT_16_MAX = 0b1111_1111_1111_1111
+
+const val INT_8_MAX  = 0b1111_1111.toFloat()
+const val INT_16_MAX = 0b1111_1111_1111_1111.toFloat()
