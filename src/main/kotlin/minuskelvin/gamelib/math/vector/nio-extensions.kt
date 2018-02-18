@@ -2,6 +2,9 @@ package minuskelvin.gamelib.math.vector
 
 import minuskelvin.gamelib.math.toIntUnsigned
 import java.nio.ByteBuffer
+import java.nio.DoubleBuffer
+import java.nio.FloatBuffer
+import java.nio.IntBuffer
 
 fun ByteBuffer.putVectorAsByte(vector: Vector2i) {
     put(vector.x.toByte())
@@ -206,3 +209,96 @@ fun ByteBuffer.getVector3d(index: Int) =
         Vector3d(getDouble(index), getDouble(index+8), getDouble(index+16))
 fun ByteBuffer.getVector4d(index: Int) =
         Vector4d(getDouble(index), getDouble(index+8), getDouble(index+16), getDouble(index+24))
+
+fun FloatBuffer.putVector(vector: Vector2f) {
+    put(vector.x)
+    put(vector.y)
+}
+fun FloatBuffer.putVector(vector: Vector3f) {
+    put(vector.x)
+    put(vector.y)
+    put(vector.z)
+}
+fun FloatBuffer.putVector(vector: Vector4f) {
+    put(vector.x)
+    put(vector.y)
+    put(vector.z)
+    put(vector.w)
+}
+fun FloatBuffer.putVector(index: Int, vector: Vector2f) {
+    put(index+0, vector.x)
+    put(index+1, vector.y)
+}
+fun FloatBuffer.putVector(index: Int, vector: Vector3f) {
+    put(index+0, vector.x)
+    put(index+1, vector.y)
+    put(index+2, vector.z)
+}
+fun FloatBuffer.putVector(index: Int, vector: Vector4f) {
+    put(index+0, vector.x)
+    put(index+1, vector.y)
+    put(index+2, vector.z)
+    put(index+3, vector.w)
+}
+
+fun DoubleBuffer.putVector(vector: Vector2d) {
+    put(vector.x)
+    put(vector.y)
+}
+fun DoubleBuffer.putVector(vector: Vector3d) {
+    put(vector.x)
+    put(vector.y)
+    put(vector.z)
+}
+fun DoubleBuffer.putVector(vector: Vector4d) {
+    put(vector.x)
+    put(vector.y)
+    put(vector.z)
+    put(vector.w)
+}
+fun DoubleBuffer.putVector(index: Int, vector: Vector2d) {
+    put(index+0, vector.x)
+    put(index+1, vector.y)
+}
+fun DoubleBuffer.putVector(index: Int, vector: Vector3d) {
+    put(index+0, vector.x)
+    put(index+1, vector.y)
+    put(index+2, vector.z)
+}
+fun DoubleBuffer.putVector(index: Int, vector: Vector4d) {
+    put(index+0, vector.x)
+    put(index+1, vector.y)
+    put(index+2, vector.z)
+    put(index+3, vector.w)
+}
+
+fun IntBuffer.putVector(vector: Vector2i) {
+    put(vector.x)
+    put(vector.y)
+}
+fun IntBuffer.putVector(vector: Vector3i) {
+    put(vector.x)
+    put(vector.y)
+    put(vector.z)
+}
+fun IntBuffer.putVector(vector: Vector4i) {
+    put(vector.x)
+    put(vector.y)
+    put(vector.z)
+    put(vector.w)
+}
+fun IntBuffer.putVector(index: Int, vector: Vector2i) {
+    put(index+0, vector.x)
+    put(index+1, vector.y)
+}
+fun IntBuffer.putVector(index: Int, vector: Vector3i) {
+    put(index+0, vector.x)
+    put(index+1, vector.y)
+    put(index+2, vector.z)
+}
+fun IntBuffer.putVector(index: Int, vector: Vector4i) {
+    put(index+0, vector.x)
+    put(index+1, vector.y)
+    put(index+2, vector.z)
+    put(index+3, vector.w)
+}

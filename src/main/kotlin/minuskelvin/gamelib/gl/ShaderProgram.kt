@@ -30,4 +30,6 @@ class ShaderProgram(vertexSource: String, fragmentSource: String) {
     fun use() {
         glUseProgram(id)
     }
+    
+    fun getUniformLocation(name: String) = glGetUniformLocation(id, name)
 }

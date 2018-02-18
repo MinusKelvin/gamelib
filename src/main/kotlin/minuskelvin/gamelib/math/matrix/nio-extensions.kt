@@ -1,6 +1,9 @@
 package minuskelvin.gamelib.math.matrix
 
 import java.nio.ByteBuffer
+import java.nio.DoubleBuffer
+import java.nio.FloatBuffer
+import java.nio.IntBuffer
 
 fun ByteBuffer.putMatrix(matrix: Matrix2f) {
     putFloat(matrix.m00)
@@ -325,3 +328,219 @@ fun ByteBuffer.getMatrix4d(index: Int) = Matrix4d(
         getDouble(index + 112),
         getDouble(index + 120)
 )
+
+fun FloatBuffer.putMatrix(matrix: Matrix2f) {
+    put(matrix.m00)
+    put(matrix.m01)
+    put(matrix.m10)
+    put(matrix.m11)
+}
+fun FloatBuffer.putMatrix(matrix: Matrix3f) {
+    put(matrix.m00)
+    put(matrix.m01)
+    put(matrix.m02)
+    put(matrix.m10)
+    put(matrix.m11)
+    put(matrix.m12)
+    put(matrix.m20)
+    put(matrix.m21)
+    put(matrix.m22)
+}
+fun FloatBuffer.putMatrix(matrix: Matrix4f) {
+    put(matrix.m00)
+    put(matrix.m01)
+    put(matrix.m02)
+    put(matrix.m03)
+    put(matrix.m10)
+    put(matrix.m11)
+    put(matrix.m12)
+    put(matrix.m13)
+    put(matrix.m20)
+    put(matrix.m21)
+    put(matrix.m22)
+    put(matrix.m23)
+    put(matrix.m30)
+    put(matrix.m31)
+    put(matrix.m32)
+    put(matrix.m33)
+}
+
+fun FloatBuffer.putMatrix(index: Int, matrix: Matrix2f) {
+    put(index + 0, matrix.m00)
+    put(index + 1, matrix.m01)
+    put(index + 2, matrix.m10)
+    put(index + 3, matrix.m11)
+}
+fun FloatBuffer.putMatrix(index: Int, matrix: Matrix3f) {
+    put(index + 0, matrix.m00)
+    put(index + 1, matrix.m01)
+    put(index + 2, matrix.m02)
+    put(index + 3, matrix.m10)
+    put(index + 4, matrix.m11)
+    put(index + 5, matrix.m12)
+    put(index + 6, matrix.m20)
+    put(index + 7, matrix.m21)
+    put(index + 8, matrix.m22)
+}
+fun FloatBuffer.putMatrix(index: Int, matrix: Matrix4f) {
+    put(index + 0, matrix.m00)
+    put(index + 1, matrix.m01)
+    put(index + 2, matrix.m02)
+    put(index + 3, matrix.m03)
+    put(index + 4, matrix.m10)
+    put(index + 5, matrix.m11)
+    put(index + 6, matrix.m12)
+    put(index + 7, matrix.m13)
+    put(index + 8, matrix.m20)
+    put(index + 9, matrix.m21)
+    put(index + 10, matrix.m22)
+    put(index + 11, matrix.m23)
+    put(index + 12, matrix.m30)
+    put(index + 13, matrix.m31)
+    put(index + 14, matrix.m32)
+    put(index + 15, matrix.m33)
+}
+
+fun DoubleBuffer.putMatrix(matrix: Matrix2d) {
+    put(matrix.m00)
+    put(matrix.m01)
+    put(matrix.m10)
+    put(matrix.m11)
+}
+fun DoubleBuffer.putMatrix(matrix: Matrix3d) {
+    put(matrix.m00)
+    put(matrix.m01)
+    put(matrix.m02)
+    put(matrix.m10)
+    put(matrix.m11)
+    put(matrix.m12)
+    put(matrix.m20)
+    put(matrix.m21)
+    put(matrix.m22)
+}
+fun DoubleBuffer.putMatrix(matrix: Matrix4d) {
+    put(matrix.m00)
+    put(matrix.m01)
+    put(matrix.m02)
+    put(matrix.m03)
+    put(matrix.m10)
+    put(matrix.m11)
+    put(matrix.m12)
+    put(matrix.m13)
+    put(matrix.m20)
+    put(matrix.m21)
+    put(matrix.m22)
+    put(matrix.m23)
+    put(matrix.m30)
+    put(matrix.m31)
+    put(matrix.m32)
+    put(matrix.m33)
+}
+
+fun DoubleBuffer.putMatrix(index: Int, matrix: Matrix2d) {
+    put(index + 0, matrix.m00)
+    put(index + 1, matrix.m01)
+    put(index + 2, matrix.m10)
+    put(index + 3, matrix.m11)
+}
+fun DoubleBuffer.putMatrix(index: Int, matrix: Matrix3d) {
+    put(index + 0, matrix.m00)
+    put(index + 1, matrix.m01)
+    put(index + 2, matrix.m02)
+    put(index + 3, matrix.m10)
+    put(index + 4, matrix.m11)
+    put(index + 5, matrix.m12)
+    put(index + 6, matrix.m20)
+    put(index + 7, matrix.m21)
+    put(index + 8, matrix.m22)
+}
+fun DoubleBuffer.putMatrix(index: Int, matrix: Matrix4d) {
+    put(index + 0, matrix.m00)
+    put(index + 1, matrix.m01)
+    put(index + 2, matrix.m02)
+    put(index + 3, matrix.m03)
+    put(index + 4, matrix.m10)
+    put(index + 5, matrix.m11)
+    put(index + 6, matrix.m12)
+    put(index + 7, matrix.m13)
+    put(index + 8, matrix.m20)
+    put(index + 9, matrix.m21)
+    put(index + 10, matrix.m22)
+    put(index + 11, matrix.m23)
+    put(index + 12, matrix.m30)
+    put(index + 13, matrix.m31)
+    put(index + 14, matrix.m32)
+    put(index + 15, matrix.m33)
+}
+
+fun IntBuffer.putMatrix(matrix: Matrix2i) {
+    put(matrix.m00)
+    put(matrix.m01)
+    put(matrix.m10)
+    put(matrix.m11)
+}
+fun IntBuffer.putMatrix(matrix: Matrix3i) {
+    put(matrix.m00)
+    put(matrix.m01)
+    put(matrix.m02)
+    put(matrix.m10)
+    put(matrix.m11)
+    put(matrix.m12)
+    put(matrix.m20)
+    put(matrix.m21)
+    put(matrix.m22)
+}
+fun IntBuffer.putMatrix(matrix: Matrix4i) {
+    put(matrix.m00)
+    put(matrix.m01)
+    put(matrix.m02)
+    put(matrix.m03)
+    put(matrix.m10)
+    put(matrix.m11)
+    put(matrix.m12)
+    put(matrix.m13)
+    put(matrix.m20)
+    put(matrix.m21)
+    put(matrix.m22)
+    put(matrix.m23)
+    put(matrix.m30)
+    put(matrix.m31)
+    put(matrix.m32)
+    put(matrix.m33)
+}
+
+fun IntBuffer.putMatrix(index: Int, matrix: Matrix2i) {
+    put(index + 0, matrix.m00)
+    put(index + 1, matrix.m01)
+    put(index + 2, matrix.m10)
+    put(index + 3, matrix.m11)
+}
+fun IntBuffer.putMatrix(index: Int, matrix: Matrix3i) {
+    put(index + 0, matrix.m00)
+    put(index + 1, matrix.m01)
+    put(index + 2, matrix.m02)
+    put(index + 3, matrix.m10)
+    put(index + 4, matrix.m11)
+    put(index + 5, matrix.m12)
+    put(index + 6, matrix.m20)
+    put(index + 7, matrix.m21)
+    put(index + 8, matrix.m22)
+}
+fun IntBuffer.putMatrix(index: Int, matrix: Matrix4i) {
+    put(index + 0, matrix.m00)
+    put(index + 1, matrix.m01)
+    put(index + 2, matrix.m02)
+    put(index + 3, matrix.m03)
+    put(index + 4, matrix.m10)
+    put(index + 5, matrix.m11)
+    put(index + 6, matrix.m12)
+    put(index + 7, matrix.m13)
+    put(index + 8, matrix.m20)
+    put(index + 9, matrix.m21)
+    put(index + 10, matrix.m22)
+    put(index + 11, matrix.m23)
+    put(index + 12, matrix.m30)
+    put(index + 13, matrix.m31)
+    put(index + 14, matrix.m32)
+    put(index + 15, matrix.m33)
+}

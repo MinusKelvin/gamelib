@@ -64,8 +64,11 @@ class ButtonInput internal constructor(ic: InputHandler) : Input(ic) {
 }
 
 class AxisInput internal constructor(ic: InputHandler) : Input(ic) {
+    var deadzone = 0.2f
     var value = 0f
-        internal set
+        internal set(v) {
+            field = if (v < deadzone) 0f else (v - deadzone) / (1 - deadzone)
+        }
 
     override fun encodeState(dst: DataOutputStream) {
         dst.writeFloat(value)
