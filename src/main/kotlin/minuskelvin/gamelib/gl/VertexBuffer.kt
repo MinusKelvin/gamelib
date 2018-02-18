@@ -7,8 +7,7 @@ import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL30.glMapBufferRange
 import org.lwjgl.opengl.GL30.glVertexAttribIPointer
-import org.lwjgl.system.jemalloc.JEmalloc.je_free
-import org.lwjgl.system.jemalloc.JEmalloc.je_malloc
+import org.lwjgl.system.jemalloc.JEmalloc.*
 import java.nio.ByteBuffer
 import kotlin.reflect.KProperty
 
@@ -43,7 +42,7 @@ class VertexBuffer<T : VertexStruct<T>>(private val struct: T) : AutoCloseable {
         glBufferSubData(GL_ARRAY_BUFFER, start.toLong() * struct.stride, data.buffer)
     }
     
-    fun map(invalidate: Boolean = false): Mapped {
+    fun map(): Mapped {
         if (length == null)
             error("VertexBuffer has not been allocated")
         bind()
@@ -75,8 +74,16 @@ class VertexBuffer<T : VertexStruct<T>>(private val struct: T) : AutoCloseable {
     }
 }
 
-class VertexArray<T: VertexStruct<T>>(private val struct: T, val length: Int) : AutoCloseable {
+class VertexArray<T: VertexStruct<T>>(private val struct: T, length: Int) : AutoCloseable {
     internal var buffer = je_malloc(length.toLong() * struct.stride)
+    var length = length
+        private set
+    
+    fun realloc(newlength: Int) {
+        buffer.position(0)
+        length = newlength
+        buffer = je_realloc(buffer, newlength.toLong() * struct.stride)
+    }
 
     operator fun get(index: Int): T {
         buffer.position(index * struct.stride)
