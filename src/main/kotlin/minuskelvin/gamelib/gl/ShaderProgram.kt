@@ -3,8 +3,8 @@ package minuskelvin.gamelib.gl
 import org.lwjgl.opengl.GL11.GL_TRUE
 import org.lwjgl.opengl.GL20.*
 
-class ShaderProgram(vertexSource: String, fragmentSource: String) {
-    private val id: Int
+class ShaderProgram(vertexSource: String, fragmentSource: String) : AutoCloseable {
+    val id: Int
     
     init {
         val vertex = glCreateShader(GL_VERTEX_SHADER)
@@ -25,6 +25,9 @@ class ShaderProgram(vertexSource: String, fragmentSource: String) {
         glLinkProgram(id)
         if (glGetProgrami(id, GL_LINK_STATUS) != GL_TRUE)
             error(glGetProgramInfoLog(id))
+        
+        glDeleteShader(vertex)
+        glDeleteShader(fragment)
     }
     
     fun use() {
@@ -32,4 +35,8 @@ class ShaderProgram(vertexSource: String, fragmentSource: String) {
     }
     
     fun getUniformLocation(name: String) = glGetUniformLocation(id, name)
+
+    override fun close() {
+        glDeleteProgram(id)
+    }
 }

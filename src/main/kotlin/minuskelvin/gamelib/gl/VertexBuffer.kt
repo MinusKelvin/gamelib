@@ -12,7 +12,7 @@ import java.nio.ByteBuffer
 import kotlin.reflect.KProperty
 
 class VertexBuffer<T : VertexStruct<T>>(private val struct: T) : AutoCloseable {
-    private val id = glGenBuffers()
+    val id = glGenBuffers()
     
     fun bind() = glBindBuffer(GL_ARRAY_BUFFER, id)
     

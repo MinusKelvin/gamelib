@@ -6,10 +6,7 @@ import minuskelvin.gamelib.math.vector.Vector2i
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
-import org.lwjgl.opengl.GL11.GL_COLOR
-import org.lwjgl.opengl.GL11.GL_DEPTH
 import org.lwjgl.opengl.GL30.*
-import org.lwjgl.system.MemoryStack.stackPush
 import org.lwjgl.system.MemoryUtil.NULL
 
 /**
@@ -89,14 +86,6 @@ class Application(winconfig: WindowConfig) : AutoCloseable {
         inputHandler = InputHandler(this, glfwWindow)
         screen = object: RenderTarget {
             override fun bind() = glBindFramebuffer(GL_FRAMEBUFFER, 0)
-            override fun clearColor(r: Float, g: Float, b: Float, a: Float) = stackPush().use {
-                bind()
-                glClearBufferfv(GL_COLOR, 0, it.floats(r, g, b, a))
-            }
-            override fun clearDepth(depth: Float) = stackPush().use {
-                bind()
-                glClearBufferfv(GL_DEPTH, 0, it.floats(1f))
-            }
         }
     }
 
