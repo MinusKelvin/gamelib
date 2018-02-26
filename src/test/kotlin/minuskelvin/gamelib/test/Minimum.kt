@@ -6,7 +6,7 @@ import minuskelvin.gamelib.Windowed
 import minuskelvin.gamelib.gl.*
 import minuskelvin.gamelib.graphics.Camera
 import minuskelvin.gamelib.graphics.Color
-import minuskelvin.gamelib.graphics.Orthographic
+import minuskelvin.gamelib.graphics.Perspective
 import minuskelvin.gamelib.input.ButtonOrAxisSource
 import minuskelvin.gamelib.math.vector.Vector2f
 import minuskelvin.gamelib.math.vector.Vector2i
@@ -29,8 +29,8 @@ class State(val app: Application) : Screen {
     )
     val texture = Texture2D()
     val projection =
-//            Perspective(PI.toFloat()/2, 4/3f, 0.001f, 100f)
-            Orthographic(-4/3f, 4/3f, -1f, 1f, 0f, 2f)
+            Perspective(PI.toFloat()/2, 4/3f, 0.001f, 100f)
+//            Orthographic(-4/3f, 4/3f, -1f, 1f, 0f, 2f)
     val camera = Camera(projection)
     val cameraloc = shader.getUniformLocation("proj")
     
@@ -111,9 +111,9 @@ class State(val app: Application) : Screen {
     }
 
     override fun windowResize(width: Int, height: Int) {
-//        projection.aspect = width.toFloat() / height
-        projection.left = -width.toFloat() / height
-        projection.right = width.toFloat() / height
+        projection.aspect = width.toFloat() / height
+//        projection.left = -width.toFloat() / height
+//        projection.right = width.toFloat() / height
     }
 }
 
