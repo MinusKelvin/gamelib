@@ -1,5 +1,6 @@
 package minuskelvin.gamelib.gl
 
+import minuskelvin.gamelib.graphics.Color
 import minuskelvin.gamelib.math.vector.*
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL12.GL_UNSIGNED_INT_2_10_10_10_REV
@@ -258,6 +259,20 @@ open class VertexStruct<T: VertexStruct<T>> {
             assert(thisRef === this@VertexStruct)
             val ptr = ptr!!
             return ptr.getVector4iAsUnsignedByte(ptr.position() + offset).toFloat() / INT_8_MAX
+        }
+    }
+
+    protected inner class ColorAttribute(index: Int) : Attribute(index, GL_UNSIGNED_BYTE, 4, true, fieldOffset(4)) {
+        operator fun setValue(thisRef: VertexStruct<T>, property: KProperty<*>, value: Color) {
+            assert(thisRef === this@VertexStruct)
+            val ptr = ptr!!
+            ptr.putInt(ptr.position() + offset, value.rgba)
+        }
+
+        operator fun getValue(thisRef: VertexStruct<T>, property: KProperty<*>): Color {
+            assert(thisRef === this@VertexStruct)
+            val ptr = ptr!!
+            return Color(ptr.getInt(ptr.position() + offset))
         }
     }
 

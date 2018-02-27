@@ -1,10 +1,14 @@
 package minuskelvin.gamelib.gl
 
+import minuskelvin.gamelib.graphics.Camera
+import minuskelvin.gamelib.math.matrix.putMatrix
 import org.lwjgl.opengl.GL11.GL_TRUE
 import org.lwjgl.opengl.GL20.*
+import org.lwjgl.system.MemoryStack
 
-class ShaderProgram(vertexSource: String, fragmentSource: String) : AutoCloseable {
+class ShaderProgram(vertexSource: String, fragmentSource: String, cameraUniform: String) : AutoCloseable {
     val id: Int
+    val cameraLocation: Int
     
     init {
         val vertex = glCreateShader(GL_VERTEX_SHADER)
@@ -28,10 +32,17 @@ class ShaderProgram(vertexSource: String, fragmentSource: String) : AutoCloseabl
         
         glDeleteShader(vertex)
         glDeleteShader(fragment)
+        
+        cameraLocation = getUniformLocation(cameraUniform)
     }
     
-    fun use() {
+    fun use(camera: Camera) {
         glUseProgram(id)
+        MemoryStack.stackPush().use { stack ->
+            val buf = stack.mallocFloat(16)
+            buf.putMatrix(0, camera.matrix)
+            glUniformMatrix4fv(cameraLocation, false, buf)
+        }
     }
     
     fun getUniformLocation(name: String) = glGetUniformLocation(id, name)

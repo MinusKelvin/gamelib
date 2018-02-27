@@ -28,7 +28,7 @@ sealed class Image constructor(internal val buffer: ByteBuffer, val size: Vector
             throw IndexOutOfBoundsException("$x")
         if (y < 0 || y >= size.y)
             throw IndexOutOfBoundsException("$y")
-        buffer.putInt(x*4 + y*4*size.x, color.rgba8)
+        buffer.putInt(x*4 + y*4*size.x, color.rgba)
     }
 }
 

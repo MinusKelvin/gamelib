@@ -1,12 +1,9 @@
 package minuskelvin.gamelib.graphics
 
 import minuskelvin.gamelib.math.matrix.Matrix4f
-import minuskelvin.gamelib.math.matrix.putMatrix
 import minuskelvin.gamelib.math.matrix.rotation
 import minuskelvin.gamelib.math.matrix.translation
 import minuskelvin.gamelib.math.vector.Vector3f
-import org.lwjgl.opengl.GL20
-import org.lwjgl.system.MemoryStack.stackPush
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -20,20 +17,12 @@ class Camera(val projection: Projection) {
     var pitch = 0f;                      set(v) { field = v; dirty = true }
     var roll = 0f;                       set(v) { field = v; dirty = true }
     
-    private var matrix = genMatrix()
+    var matrix = genMatrix()
         get() {
-            if (dirty)
+            if (dirty || projection.dirty)
                 matrix = genMatrix()
             return field
         }
-    
-    fun use(uniformLocation: Int) {
-        stackPush().use { stack ->
-            val buf = stack.mallocFloat(16)
-            buf.putMatrix(0, matrix)
-            GL20.glUniformMatrix4fv(uniformLocation, false, buf)
-        }
-    }
     
     private fun genMatrix() = projection.matrix *
                 rotation(cos(roll), sin(roll), 0f, 0f, -1f) * // roll
@@ -43,6 +32,7 @@ class Camera(val projection: Projection) {
 }
 
 sealed class Projection {
+    internal abstract val dirty: Boolean
     abstract val matrix: Matrix4f
 }
 
@@ -57,7 +47,7 @@ class Orthographic(
         zoomBase: Float = 1.5f
 ) : Projection() {
     
-    private var dirty = false
+    override var dirty = false; private set
     var left = left;         set(v) { field = v; dirty = true }
     var right = right;       set(v) { field = v; dirty = true }
     var bottom = bottom;     set(v) { field = v; dirty = true }
@@ -86,7 +76,7 @@ class Orthographic(
 }
 
 class Perspective(fov: Float, aspect: Float, near: Float, far: Float, zoom: Float = 0f, zoomBase: Float = 1.5f) : Projection() {
-    var dirty = false
+    override var dirty = false; private set
     var fov = fov;           set(v) { field = v; dirty = true }
     var aspect = aspect;     set(v) { field = v; dirty = true }
     var near = near;         set(v) { field = v; dirty = true }
