@@ -301,6 +301,8 @@ open class VertexStruct<T: VertexStruct<T>> {
     }
 }
 
+inline infix fun<T: VertexStruct<T>> T.`=`(block: T.() -> Unit) = block()
+
 const val INT_2_MAX  = 0b11
 const val INT_10_MAX = 0b1111_1111_11
 

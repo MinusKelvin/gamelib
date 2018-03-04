@@ -3,7 +3,6 @@ package minuskelvin.gamelib.test
 import minuskelvin.gamelib.Application
 import minuskelvin.gamelib.Screen
 import minuskelvin.gamelib.Windowed
-import minuskelvin.gamelib.gl.VertexStruct
 import minuskelvin.gamelib.graphics.Camera
 import minuskelvin.gamelib.graphics.Color
 import minuskelvin.gamelib.graphics.Orthographic
@@ -15,11 +14,6 @@ import org.lwjgl.opengl.GL11.*
 import kotlin.math.cos
 import kotlin.math.sin
 
-object PosColorStruct : VertexStruct<PosColorStruct>() {
-    var pos by Vector3fAttribute(0)
-    var tex by ShortVector2fAttribute(1)
-}
-
 class State(val app: Application) : Screen {
     val renderer = ShapeRenderer()
     val projection = Orthographic(-4/3f, 4/3f, -1f, 1f, 0f, 2f)
@@ -28,6 +22,10 @@ class State(val app: Application) : Screen {
     var rot = Vector2f(1f, 0f)
     val rotby = Vector2f(cos(0.01f), sin(0.01f))
     
+    init {
+        projection.zoom = -1f
+    }
+    
     override fun render(delta: Double) {
         app.screen.clearColor(0f, 0f, 0f, 1f)
         
@@ -35,8 +33,8 @@ class State(val app: Application) : Screen {
         glCullFace(GL_BACK)
         glFrontFace(GL_CCW)
         
-        renderer.start(camera).use {
-            it.rectangle(0f, 0f, 0.8f, 0.8f, rot = rot,
+        renderer.draw(camera) { drawer ->
+            drawer.rectangle(0f, 0f, 1.2f, 0.8f, rot = rot,
                     coltl = Color.RED, coltr = Color.GREEN,
                     colbl = Color.BLUE, colbr = Color.WHITE)
         }

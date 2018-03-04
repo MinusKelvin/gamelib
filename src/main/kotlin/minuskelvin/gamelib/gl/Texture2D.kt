@@ -24,13 +24,13 @@ class Texture2D : AutoCloseable {
     
     fun allocate(from: Image) {
         bind()
-        this.size = from.size
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, from.size.x, from.size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, from.buffer)
+        this.size = Vector2i(from.width, from.height)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, from.width, from.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, from.buffer)
     }
     
     fun update(from: Image, topleft: Vector2i) {
         bind()
-        glTexSubImage2D(GL_TEXTURE_2D, 0, topleft.x, topleft.y, from.size.x, from.size.y, GL_RGBA, GL_UNSIGNED_BYTE, from.buffer)
+        glTexSubImage2D(GL_TEXTURE_2D, 0, topleft.x, topleft.y, from.width, from.height, GL_RGBA, GL_UNSIGNED_BYTE, from.buffer)
     }
 
     override fun close() {
